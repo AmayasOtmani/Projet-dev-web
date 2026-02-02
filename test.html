@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>API Test</title>
+        <style>
+            body {
+                font-family: sans-serif;
+                max-width: 600px;
+                margin: 40px auto;
+            }
+            input,
+            button,
+            pre {
+                width: 100%;
+                margin: 8px 0;
+                padding: 8px;
+            }
+            button {
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>JWT</h2>
+        <pre id="token">No token yet</pre>
+        <details>
+            <summary>
+                Login
+            </summary>
+            <input id="email" placeholder="Email"/>
+            <input id="password" type="password" placeholder="Password"/>
+            <button onclick="login()">POST /auth/login</button>
+
+            <h2>Response</h2>
+            <pre id="log_output"></pre>
+        </details>
+        <details>
+            <summary>
+                Signup
+            </summary>
+            <input id="su_email" placeholder="Email"/>
+            <input id="su_password" type="password" placeholder="Password"/>
+            <input id="su_nom" type="text" placeholder="Nom"/>
+            <input id="su_prenom" type="text" placeholder="Prenom"/>
+            <input id="su_date" type="date" placeholder="Date"/>
+            <input id="su_role" list="roles" type="text" placeholder="role"/>
+            <button onclick="signup()">POST /auth/signup</button>
+            <h2>Response</h2>
+            <pre id="su_output"></pre>
+        </details>
+
+        <datalist id="roles">
+            <option value="admin"></option>
+            <option value="proprietaire"></option>
+            <option value="client"></option>
+        </datalist>
+
+        <details>
+            <summary>
+                Liste utilisateurs
+            </summary>
+            <button onclick="getUsers()">GET /users/</button>
+            <h2>Results</h2>
+            <pre id="output"></pre>
+        </details>
+          <details>
+            <summary>
+                valider utilisateur
+            </summary>
+            <input id="activate_id" type="text" placeholder="User ID"/>
+            <button onclick="activateUser(true)">PUT users/:id/activate</button>
+            <h2>Results</h2>
+            <pre id="output_activate"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Avis
+            </summary>
+            <input id="avis_salle_id" type="text" placeholder="Salle ID"/>
+            <input id="avis_note" type="number" placeholder="Note (0-5)"/>
+            <input id="avis_text" type="text" placeholder="Commentaire"/>
+            <button onclick="postAvis()">POST /avis</button>
+            <h2>Results</h2>
+            <pre id="output_avis"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Get Avis by Salle
+            </summary>
+            <input id="get_avis_salle_id" type="text" placeholder="Salle ID"/>
+            <button onclick="getAvisBySalle()">GET /avis/salles/:salleId</button>
+            <h2>Results</h2>
+            <pre id="output_get_avis"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Delete Avis
+            </summary>
+            <input id="delete_avis_id" type="text" placeholder="Avis ID"/>
+            <button onclick="deleteAvis()">DELETE /avis/avis/:id</button>
+            <h2>Results</h2>
+            <pre id="output_delete_avis"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Delete Commentaire
+            </summary>
+            <input id="delete_commentaire_id" type="text" placeholder="Commentaire ID"/>
+            <button onclick="deleteCommentaire()">DELETE /avis/commentaires/:id</button>
+            <h2>Results</h2>
+            <pre id="output_delete_commentaire"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Reservations
+            </summary>
+            <input id="reservation_salle_id" type="text" placeholder="Salle ID"/>
+            <input id="reservation_debut" type="datetime-local" placeholder="Date et heure de début"/>
+            <input id="reservation_fin" type="datetime-local" placeholder="Date et heure de fin"/>
+            <button onclick="postReservation()">POST /reservations</button>
+            <h2>Results</h2>
+            <pre id="output_reservation"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Get Reservations
+            </summary>
+            <button onclick="getReservations()">GET /reservations</button>
+            <h2>Results</h2>
+            <pre id="output_get_reservations"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Delete Reservation
+            </summary>
+            <input id="delete_reservation_id" type="text" placeholder="Reservation ID"/>
+            <button onclick="deleteReservation()">DELETE /reservations/:id</button>
+            <h2>Results</h2>
+            <pre id="output_delete_reservation"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Get Salles
+            </summary>
+            <button onclick="getSalles()">GET /salles</button>
+            <h2>Results</h2>
+            <pre id="output_get_salles"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Post Salle
+            </summary>
+            <input id="salle_nom" type="text" placeholder="Nom"/>
+            <input id="salle_addresse" type="text" placeholder="Addresse"/>
+            <input id="salle_longitude" type="text" placeholder="Longitude"/>
+            <input id="salle_latitude" type="text" placeholder="Latitude"/>
+            <input id="salle_description" type="text" placeholder="Description"/>
+            <input id="salle_capacite" type="number" placeholder="Capacite"/>
+            <input id="salle_prix" type="number" placeholder="Prix"/>
+            <button onclick="postSalle()">POST /salles</button>
+            <h2>Results</h2>
+            <pre id="output_post_salle"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Get Salle by ID
+            </summary>
+            <input id="get_salle_id" type="text" placeholder="Salle ID"/>
+            <button onclick="getSalleById()">GET /salles/:id</button>
+            <h2>Results</h2>
+            <pre id="output_get_salle_by_id"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Update Salle
+            </summary>
+            <input id="update_salle_id" type="text" placeholder="Salle ID"/>
+            <input id="update_salle_nom" type="text" placeholder="Nom"/>
+            <input id="update_salle_addresse" type="text" placeholder="Addresse"/>
+            <input id="update_salle_longitude" type="text" placeholder="Longitude"/>
+            <input id="update_salle_latitude" type="text" placeholder="Latitude"/>
+            <input id="update_salle_description" type="text" placeholder="Description"/>
+            <input id="update_salle_capacite" type="number" placeholder="Capacite"/>
+            <input id="update_salle_prix" type="number" placeholder="Prix"/>
+            <button onclick="updateSalle()">PUT /salles/:id</button>
+            <h2>Results</h2>
+            <pre id="output_update_salle"></pre>
+        </details>
+
+        <details>
+            <summary>
+                Delete Salle
+            </summary>
+            <input id="delete_salle_id" type="text" placeholder="Salle ID"/>
+            <button onclick="deleteSalle()">DELETE /salles/:id</button>
+            <h2>Results</h2>
+            <pre id="output_delete_salle"></pre>
+        </details>
+
+        <script>
+            const API_BASE = "http://localhost:3000"; // change if needed
+            let jwtToken = null;
+
+            async function login() {
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+
+                try {
+                    const res = await fetch(`${API_BASE}/auth/login`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(
+                            {email, password}
+                        )
+                    });
+
+                    const data = await res.json();
+
+                    if (! res.ok) {
+                        document.getElementById("log_output").textContent = JSON.stringify(data, null, 2);
+                        return;
+                    }
+
+                    // adjust if your API uses a different field name
+                    jwtToken = data.token;
+                    document.getElementById("token").textContent = jwtToken;
+
+                    document.getElementById("output").textContent = "Login successful";
+                } catch (err) {
+                    document.getElementById("output").textContent = err.toString();
+                }
+            }
+            async function signup() {
+                const email = document.getElementById("su_email").value;
+                const password = document.getElementById("su_password").value;
+                const nom = document.getElementById("su_nom").value;
+                const prenom = document.getElementById("su_prenom").value;
+                const date = document.getElementById("su_date").value;
+                const role = document.getElementById("su_role").value;
+                try {
+                    const res = await fetch(`${API_BASE}/auth/signup`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(
+                            {
+                                email,
+                                password,
+                                nom,
+                                prenom,
+                                date,
+                                role
+                            }
+                        )
+                    });
+
+                    const data = await res.json();
+                    document.getElementById("su_output").textContent = JSON.stringify(data, null, 2);
+                    return;
+                } catch (err) {
+                    document.getElementById("output").textContent = err.toString();
+                }
+            }
+            async function getUsers() {
+                if (! jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/users`, {
+                        headers: {
+                            "Authorization": `Bearer ${jwtToken}`
+                        }
+                    });
+
+                    const data = await res.json();
+
+                    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output").textContent = err.toString();
+                }
+            }
+
+            async function activateUser() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const userId = document.getElementById("activate_id").value;
+                if (!userId) {
+                    alert("Please enter a user ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/users/${userId}/activate`, {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `Bearer ${jwtToken}`
+                        }
+                    });
+
+                    const data = await res.json();
+
+                    document.getElementById("output_activate").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_activate").textContent = err.toString();
+                }
+            }
+
+            async function postAvis() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const salleId = document.getElementById("avis_salle_id").value;
+                const note = document.getElementById("avis_note").value;
+                const text = document.getElementById("avis_text").value;
+
+                if (!salleId) {
+                    alert("Please enter a salle ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/avis`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${jwtToken}`
+                        },
+                        body: JSON.stringify({
+                            salleId,
+                            note,
+                            text
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    document.getElementById("output_avis").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_avis").textContent = err.toString();
+                }
+            }
+
+            async function getAvisBySalle() {
+                const salleId = document.getElementById("get_avis_salle_id").value;
+
+                if (!salleId) {
+                    alert("Please enter a salle ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/avis/salles/${salleId}`);
+                    const data = await res.json();
+                    document.getElementById("output_get_avis").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_get_avis").textContent = err.toString();
+                }
+            }
+
+            async function deleteAvis() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const avisId = document.getElementById("delete_avis_id").value;
+
+                if (!avisId) {
+                    alert("Please enter an avis ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/avis/avis/${avisId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${jwtToken}`
+                        }
+                    });
+
+                    if (res.status === 204) {
+                        document.getElementById("output_delete_avis").textContent = "Avis deleted successfully";
+                    } else {
+                        const data = await res.json();
+                        document.getElementById("output_delete_avis").textContent = JSON.stringify(data, null, 2);
+                    }
+                } catch (err) {
+                    document.getElementById("output_delete_avis").textContent = err.toString();
+                }
+            }
+
+            async function deleteCommentaire() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const commentaireId = document.getElementById("delete_commentaire_id").value;
+
+                if (!commentaireId) {
+                    alert("Please enter a commentaire ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/avis/commentaires/${commentaireId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${jwtToken}`
+                        }
+                    });
+
+                    if (res.status === 204) {
+                        document.getElementById("output_delete_commentaire").textContent = "Commentaire deleted successfully";
+                    } else {
+                        const data = await res.json();
+                        document.getElementById("output_delete_commentaire").textContent = JSON.stringify(data, null, 2);
+                    }
+                } catch (err) {
+                    document.getElementById("output_delete_commentaire").textContent = err.toString();
+                }
+            }
+
+            async function postReservation() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const salleId = document.getElementById("reservation_salle_id").value;
+                const dateHeureDebut = document.getElementById("reservation_debut").value;
+                const dateHeureFin = document.getElementById("reservation_fin").value;
+
+                if (!salleId || !dateHeureDebut || !dateHeureFin) {
+                    alert("Please fill all fields");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/reservations`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${jwtToken}`
+                        },
+                        body: JSON.stringify({
+                            salleId,
+                            dateHeureDebut,
+                            dateHeureFin
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    document.getElementById("output_reservation").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_reservation").textContent = err.toString();
+                }
+            }
+
+            async function getReservations() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/reservations`, {
+                        headers: {
+                            "Authorization": `Bearer ${jwtToken}`
+                        }
+                    });
+
+                    const data = await res.json();
+
+                    document.getElementById("output_get_reservations").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_get_reservations").textContent = err.toString();
+                }
+            }
+
+            async function deleteReservation() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const reservationId = document.getElementById("delete_reservation_id").value;
+
+                if (!reservationId) {
+                    alert("Please enter a reservation ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/reservations/${reservationId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${jwtToken}`
+                        }
+                    });
+
+                    if (res.status === 204) {
+                        document.getElementById("output_delete_reservation").textContent = "Reservation deleted successfully";
+                    } else {
+                        const data = await res.json();
+                        document.getElementById("output_delete_reservation").textContent = JSON.stringify(data, null, 2);
+                    }
+                } catch (err) {
+                    document.getElementById("output_delete_reservation").textContent = err.toString();
+                }
+            }
+
+            async function getSalles() {
+                try {
+                    const res = await fetch(`${API_BASE}/salles`);
+                    const data = await res.json();
+                    document.getElementById("output_get_salles").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_get_salles").textContent = err.toString();
+                }
+            }
+
+            async function postSalle() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const nom = document.getElementById("salle_nom").value;
+                const addresse = document.getElementById("salle_addresse").value;
+                const longitude = document.getElementById("salle_longitude").value;
+                const latitude = document.getElementById("salle_latitude").value;
+                const description = document.getElementById("salle_description").value;
+                const capacite = document.getElementById("salle_capacite").value;
+                const prix = document.getElementById("salle_prix").value;
+
+                if (!nom || !addresse || !longitude || !latitude || !description || !capacite || !prix) {
+                    alert("Please fill all fields");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/salles`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${jwtToken}`
+                        },
+                        body: JSON.stringify({
+                            nom,
+                            addresse,
+                            longitude,
+                            latitude,
+                            description,
+                            capacite,
+                            prix
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    document.getElementById("output_post_salle").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_post_salle").textContent = err.toString();
+                }
+            }
+
+            async function getSalleById() {
+                const salleId = document.getElementById("get_salle_id").value;
+
+                if (!salleId) {
+                    alert("Please enter a salle ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/salles/${salleId}`);
+                    const data = await res.json();
+                    document.getElementById("output_get_salle_by_id").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_get_salle_by_id").textContent = err.toString();
+                }
+            }
+
+            async function updateSalle() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const salleId = document.getElementById("update_salle_id").value;
+                const nom = document.getElementById("update_salle_nom").value;
+                const addresse = document.getElementById("update_salle_addresse").value;
+                const longitude = document.getElementById("update_salle_longitude").value;
+                const latitude = document.getElementById("update_salle_latitude").value;
+                const description = document.getElementById("update_salle_description").value;
+                const capacite = document.getElementById("update_salle_capacite").value;
+                const prix = document.getElementById("update_salle_prix").value;
+
+                if (!salleId) {
+                    alert("Please enter a salle ID");
+                    return;
+                }
+
+                if (!nom || !addresse || !longitude || !latitude || !description || !capacite || !prix) {
+                    alert("Please fill all fields");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/salles/${salleId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${jwtToken}`
+                        },
+                        body: JSON.stringify({
+                            nom,
+                            addresse,
+                            longitude,
+                            latitude,
+                            description,
+                            capacite,
+                            prix
+                        })
+                    });
+
+                    const data = await res.json();
+
+                    document.getElementById("output_update_salle").textContent = JSON.stringify(data, null, 2);
+                } catch (err) {
+                    document.getElementById("output_update_salle").textContent = err.toString();
+                }
+            }
+
+            async function deleteSalle() {
+                if (!jwtToken) {
+                    alert("Login first");
+                    return;
+                }
+
+                const salleId = document.getElementById("delete_salle_id").value;
+
+                if (!salleId) {
+                    alert("Please enter a salle ID");
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`${API_BASE}/salles/${salleId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${jwtToken}`
+                        }
+                    });
+
+                    if (res.status === 204) {
+                        document.getElementById("output_delete_salle").textContent = "Salle deleted successfully";
+                    } else {
+                        const data = await res.json();
+                        document.getElementById("output_delete_salle").textContent = JSON.stringify(data, null, 2);
+                    }
+                } catch (err) {
+                    document.getElementById("output_delete_salle").textContent = err.toString();
+                }
+            }
+        </script>
+    </body>
+</html></body></html>
