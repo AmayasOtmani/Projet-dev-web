@@ -57,3 +57,54 @@ Le projet utilise une architecture qui favorise un couplage faible et le princip
 *   ****security**: Ce répertoire gère tous les composants liés à la sécurité de l'application, principalement le hachage des mots de passe avec `bcrypt` et la gestion des tokens (`security.js`).
 *   **config**: Ce répertoire contient les fichiers de configuration pour différents environnements ou modules de l'application.
 
+## Schéma relationnel
+
+Voici la description des entités de la base de données, leurs clés primaires et leurs relations (clés étrangères).
+
+*   **User**
+    *   **Clé primaire**: `Id` (UUID)
+    *   **Champs**: `Nom`, `Prenom`, `Email`, `DateNaissance`, `Password`, `Valid`
+    *   **Relations**:
+        *   Un utilisateur peut posséder plusieurs `Salle` (relation un-à-plusieurs).
+        *   Un utilisateur peut effectuer plusieurs `Reservation` (relation un-à-plusieurs).
+        *   Un utilisateur peut avoir plusieurs `Role` (relation plusieurs-à-plusieurs via la table de jonction `UserRoles`).
+        *   Un utilisateur peut laisser plusieurs `Commentaire` et `Avis`.
+
+*   **Role**
+    *   **Clé primaire**: `Id` (UUID)
+    *   **Champs**: `Nom`
+    *   **Relations**:
+        *   Un rôle peut être assigné à plusieurs `User` (relation plusieurs-à-plusieurs via la table de jonction `UserRoles`).
+
+*   **Salle**
+    *   **Clé primaire**: `Id` (UUID)
+    *   **Champs**: `Nom`, `Addresse`, `Description`, `Capacite`, `Prix`, `Longitude`, `Latitude`
+    *   **Clé étrangère**: `UserId` (référence `User.Id`)
+    *   **Relations**:
+        *   Une salle appartient à un `User`.
+        *   Une salle peut avoir plusieurs `Reservation`, `Commentaire`, et `Avis`.
+
+*   **Reservation**
+    *   **Clé primaire**: `Id` (UUID)
+    *   **Champs**: `DateHeureDebut`, `DateHeureFin`
+    *   **Clés étrangères**: `UserId` (référence `User.Id`), `SalleId` (référence `Salle.Id`)
+    *   **Relations**:
+        *   Une réservation est effectuée par un `User` pour une `Salle`.
+
+*   **Commentaire**
+    *   **Clé primaire**: `Id` (UUID)
+    *   **Champs**: `Text`
+    *   **Clés étrangères**: `UserId` (référence `User.Id`), `SalleId` (référence `Salle.Id`)
+    *   **Relations**:
+        *   Un commentaire est laissé par un `User` sur une `Salle`.
+
+*   **Avis**
+    *   **Clé primaire**: `Id` (UUID)
+    *   **Champs**: `Note`
+    *   **Clés étrangères**: `UserId` (référence `User.Id`), `SalleId` (référence `Salle.Id`)
+    *   **Relations**:
+        *   Un avis est donné par un `User` pour une `Salle`.
+
+*   **UserRoles** (Table de jonction)
+    *   **Champs**: `UserId`, `RoleId`
+    *   **Description**: Table intermédiaire pour la relation plusieurs-à-plusieurs entre `User` et `Role`.
