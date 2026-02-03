@@ -51,5 +51,5 @@ Le projet utilise une architecture qui favorise un couplage faible et le princip
 *   **controllers**: Ce répertoire contient les contrôleurs qui gèrent la logique de routage et les requêtes HTTP pour chaque entité (par exemple, Auth, Avis, Reservations, Salles, Statistics, Users).
 *   **Middleware**: Ce répertoire contient les middlewares Express utilisés pour intercepter et traiter les requêtes HTTP avant qu'elles n'atteignent les gestionnaires de route. Cela inclut l'authentification (`authmw.js`) et la validation (`validationmw.js`).
 *   **persistance**: Ce répertoire contient la configuration de la base de données et potentiellement des scripts de migration ou de _seeding_ des données (`db.js`).
-*   **queries**: Ce répertoire contient les requêtes spécifiques pour récupérer des données, inspirées du pattern CQRS (Command Query Responsibility Segregation) souvent utilisé dans des architectures comme .NET.
+*   **queries**: Ce répertoire contient les requêtes spécifiques pour récupérer des données, inspirées du pattern CQRS (Command Query Responsibility Segregation) souvent utilisé dans le framework .NET.
 *   ****security**: Ce répertoire gère tous les composants liés à la sécurité de l'application, principalement le hachage des mots de passe avec `bcrypt` et la gestion des tokens (`security.js`).
