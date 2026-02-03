@@ -16,7 +16,7 @@ Ce projet est une application web construite avec Node.js et Express. Il utilise
 
 1.  Cloner le dépôt
     ```sh
-    git clone https://example.com/your-repo.git
+    git clone https://github.com/AmayasOtmani/Projet-dev-web
     ```
 2.  Installer les paquets NPM
     ```sh
@@ -31,18 +31,6 @@ Pour démarrer le serveur, exécutez la commande suivante :
 node index.js
 ```
 pour tester les routes il suffit d'ouvrir le fichier test.html
-## Dépendances
-
-*   **@sequelize/mysql**: `^7.0.0-alpha.47`
-*   **bcrypt**: `^6.0.0`
-*   **cookie-parser**: `^1.4.7`
-*   **cors**: `^2.8.6`
-*   **dotenv**: `^17.2.3`
-*   **express**: `^5.2.1`
-*   **jsonwebtoken**: `^9.0.3`
-*   **sequelize**: `^6.37.7`
-*   **sqlite3**: `^5.1.7`
-
 
 ## Architecture du projet
 
