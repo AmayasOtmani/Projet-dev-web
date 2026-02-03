@@ -1,37 +1,37 @@
-# Project Title
+# Titre du Projet
 
-Dev Web Project
+Projet Web Dev
 
 ## Description
 
-This project is a web application built with Node.js and Express. It uses a database to store and retrieve data.
+Ce projet est une application web construite avec Node.js et Express. Il utilise une base de données pour stocker et récupérer des données.
 
-## Getting Started
+## Pour commencer
 
-### Prerequisites
+### Prérequis
 
-*   Node.js and npm installed on your machine. You can download them from [https://nodejs.org/](https://nodejs.org/)
+*   Node.js et npm installés sur votre machine. Vous pouvez les télécharger depuis [https://nodejs.org/](https://nodejs.org/)
 
 ### Installation
 
-1.  Clone the repo
+1.  Cloner le dépôt
     ```sh
     git clone https://example.com/your-repo.git
     ```
-2.  Install NPM packages
+2.  Installer les paquets NPM
     ```sh
     npm install
     ```
 
-## Usage
+## Utilisation
 
-To start the server, run the following command:
+Pour démarrer le serveur, exécutez la commande suivante :
 
 ```sh
 node index.js
 ```
 
-## Dependencies
+## Dépendances
 
 *   **@sequelize/mysql**: `^7.0.0-alpha.47`
 *   **bcrypt**: `^6.0.0`
@@ -42,4 +42,3 @@ node index.js
 *   **jsonwebtoken**: `^9.0.3`
 *   **sequelize**: `^6.37.7`
 *   **sqlite3**: `^5.1.7`
-
