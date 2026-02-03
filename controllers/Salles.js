@@ -7,10 +7,10 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     const query = filterSalles({
-        prixMin: req.prixMin,
-        prixMax: req.prixMax,
-        dateMin: req.dateMin,
-        dateMax: req.dateMax
+        prixMin: req.query.prixMin,
+        prixMax: req.query.prixMax,
+        dateMin: req.query.dateMin,
+        dateMax: req.query.dateMax
     });
     var salles = await db.Salle.findAll(query);
     res.json(salles);

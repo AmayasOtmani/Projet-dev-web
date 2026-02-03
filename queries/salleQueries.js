@@ -1,24 +1,31 @@
-const { Op } = require("sequelize");
+import { Op } from '@sequelize/core';
 import db from "../persistance/db.js"
 
-const filterSalles = (filter) => {
+export const filterSalles = (filter) => {
     const query = {
-        include: {
+        where: {
+            '$Reservations.id$': null
+        },
+        include: [{
             model: db.Reservation,
-        }
-    }
-    if (filter.dateMin) {
-        query.include.where.DateHeureFin = { [Op.lt]: filter.dateMin }
-    }
-    if (filter.dateMax) {
-        query.include.where.DateHeureDebut = { [Op.gt]: filter.dateMax }
-    }
-    query.where.Prix = {
-        ...(query.where.Prix || {}),
-        ...(filter.prixMin && { [Op.gte]: filter.prixMin }),
-        ...(filter.prixMax && { [Op.lte]: filter.prixMax })
+            required: false,
+            where: {
+                [Op.and]: [
+                    { DateHeureDebut: { [Op.lt]: filter.dateMax } },
+                    { DateHeureFin: { [Op.gt]: filter.dateMin } }
+                ]
+            }
+        }]
     };
-}
-module.exports = {
+    if (filter.prixMin || filter.prixMax) {
+        query.where.Prix = {
+            ...(filter.prixMin && { [Op.gte]: filter.prixMin }),
+            ...(filter.prixMax && { [Op.lte]: filter.prixMax })
+        };
+    }
+    return query;
+};
+
+export default {
     filterSalles
 };

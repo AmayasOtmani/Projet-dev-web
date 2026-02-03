@@ -64,7 +64,7 @@
             <h2>Results</h2>
             <pre id="output"></pre>
         </details>
-          <details>
+        <details>
             <summary>
                 valider utilisateur
             </summary>
@@ -151,6 +151,10 @@
             <summary>
                 Get Salles
             </summary>
+            <input placeholder="date min" type="datetime-local" id="salles_dmin"/>
+            <input placeholder="date max" type="datetime-local" id="salles_dmax"/>
+            <input placeholder="prix min" type="number" id="salles_pmin"/>
+            <input placeholder="prix max" type="number" id="salles_pmax"/>
             <button onclick="getSalles()">GET /salles</button>
             <h2>Results</h2>
             <pre id="output_get_salles"></pre>
@@ -298,13 +302,13 @@
             }
 
             async function activateUser() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
 
                 const userId = document.getElementById("activate_id").value;
-                if (!userId) {
+                if (! userId) {
                     alert("Please enter a user ID");
                     return;
                 }
@@ -326,7 +330,7 @@
             }
 
             async function postAvis() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
@@ -335,7 +339,7 @@
                 const note = document.getElementById("avis_note").value;
                 const text = document.getElementById("avis_text").value;
 
-                if (!salleId) {
+                if (! salleId) {
                     alert("Please enter a salle ID");
                     return;
                 }
@@ -347,11 +351,9 @@
                             "Content-Type": "application/json",
                             "Authorization": `Bearer ${jwtToken}`
                         },
-                        body: JSON.stringify({
-                            salleId,
-                            note,
-                            text
-                        })
+                        body: JSON.stringify(
+                            {salleId, note, text}
+                        )
                     });
 
                     const data = await res.json();
@@ -365,7 +367,7 @@
             async function getAvisBySalle() {
                 const salleId = document.getElementById("get_avis_salle_id").value;
 
-                if (!salleId) {
+                if (! salleId) {
                     alert("Please enter a salle ID");
                     return;
                 }
@@ -380,14 +382,14 @@
             }
 
             async function deleteAvis() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
 
                 const avisId = document.getElementById("delete_avis_id").value;
 
-                if (!avisId) {
+                if (! avisId) {
                     alert("Please enter an avis ID");
                     return;
                 }
@@ -412,14 +414,14 @@
             }
 
             async function deleteCommentaire() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
 
                 const commentaireId = document.getElementById("delete_commentaire_id").value;
 
-                if (!commentaireId) {
+                if (! commentaireId) {
                     alert("Please enter a commentaire ID");
                     return;
                 }
@@ -444,7 +446,7 @@
             }
 
             async function postReservation() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
@@ -453,7 +455,7 @@
                 const dateHeureDebut = document.getElementById("reservation_debut").value;
                 const dateHeureFin = document.getElementById("reservation_fin").value;
 
-                if (!salleId || !dateHeureDebut || !dateHeureFin) {
+                if (! salleId || ! dateHeureDebut || ! dateHeureFin) {
                     alert("Please fill all fields");
                     return;
                 }
@@ -465,11 +467,9 @@
                             "Content-Type": "application/json",
                             "Authorization": `Bearer ${jwtToken}`
                         },
-                        body: JSON.stringify({
-                            salleId,
-                            dateHeureDebut,
-                            dateHeureFin
-                        })
+                        body: JSON.stringify(
+                            {salleId, dateHeureDebut, dateHeureFin}
+                        )
                     });
 
                     const data = await res.json();
@@ -481,7 +481,7 @@
             }
 
             async function getReservations() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
@@ -502,14 +502,14 @@
             }
 
             async function deleteReservation() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
 
                 const reservationId = document.getElementById("delete_reservation_id").value;
 
-                if (!reservationId) {
+                if (! reservationId) {
                     alert("Please enter a reservation ID");
                     return;
                 }
@@ -535,7 +535,32 @@
 
             async function getSalles() {
                 try {
-                    const res = await fetch(`${API_BASE}/salles`);
+                    let url = `${API_BASE}/salles`
+
+                    const prixMin = document.getElementById("salles_pmin").value;
+                    const prixMax = document.getElementById("salles_pmax").value;
+                    const dateMin = document.getElementById("salles_dmin").value;
+                    const dateMax = document.getElementById("salles_dmax").value;
+
+                    let params = []
+                    if (prixMax) {
+                        params.push(`prixMax=${prixMax}`)
+                    }
+                    if (prixMin) {
+                        params.push(`prixMin=${prixMin}`)
+                    }
+                    if (dateMax) {
+                        params.push(`dateMax=${dateMax}`)
+                    }
+                    if (dateMin) {
+                        params.push(`dateMin=${dateMin}`)
+                    }
+                    if(params.length>0)
+                    {
+                        url+="?"+params.join("&");
+                    }
+                    
+                    const res = await fetch(url);
                     const data = await res.json();
                     document.getElementById("output_get_salles").textContent = JSON.stringify(data, null, 2);
                 } catch (err) {
@@ -544,7 +569,7 @@
             }
 
             async function postSalle() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
@@ -557,7 +582,7 @@
                 const capacite = document.getElementById("salle_capacite").value;
                 const prix = document.getElementById("salle_prix").value;
 
-                if (!nom || !addresse || !longitude || !latitude || !description || !capacite || !prix) {
+                if (! nom || ! addresse || ! longitude || ! latitude || ! description || ! capacite || ! prix) {
                     alert("Please fill all fields");
                     return;
                 }
@@ -569,15 +594,17 @@
                             "Content-Type": "application/json",
                             "Authorization": `Bearer ${jwtToken}`
                         },
-                        body: JSON.stringify({
-                            nom,
-                            addresse,
-                            longitude,
-                            latitude,
-                            description,
-                            capacite,
-                            prix
-                        })
+                        body: JSON.stringify(
+                            {
+                                nom,
+                                addresse,
+                                longitude,
+                                latitude,
+                                description,
+                                capacite,
+                                prix
+                            }
+                        )
                     });
 
                     const data = await res.json();
@@ -591,7 +618,7 @@
             async function getSalleById() {
                 const salleId = document.getElementById("get_salle_id").value;
 
-                if (!salleId) {
+                if (! salleId) {
                     alert("Please enter a salle ID");
                     return;
                 }
@@ -606,7 +633,7 @@
             }
 
             async function updateSalle() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
@@ -620,12 +647,12 @@
                 const capacite = document.getElementById("update_salle_capacite").value;
                 const prix = document.getElementById("update_salle_prix").value;
 
-                if (!salleId) {
+                if (! salleId) {
                     alert("Please enter a salle ID");
                     return;
                 }
 
-                if (!nom || !addresse || !longitude || !latitude || !description || !capacite || !prix) {
+                if (! nom || ! addresse || ! longitude || ! latitude || ! description || ! capacite || ! prix) {
                     alert("Please fill all fields");
                     return;
                 }
@@ -637,15 +664,17 @@
                             "Content-Type": "application/json",
                             "Authorization": `Bearer ${jwtToken}`
                         },
-                        body: JSON.stringify({
-                            nom,
-                            addresse,
-                            longitude,
-                            latitude,
-                            description,
-                            capacite,
-                            prix
-                        })
+                        body: JSON.stringify(
+                            {
+                                nom,
+                                addresse,
+                                longitude,
+                                latitude,
+                                description,
+                                capacite,
+                                prix
+                            }
+                        )
                     });
 
                     const data = await res.json();
@@ -657,14 +686,14 @@
             }
 
             async function deleteSalle() {
-                if (!jwtToken) {
+                if (! jwtToken) {
                     alert("Login first");
                     return;
                 }
 
                 const salleId = document.getElementById("delete_salle_id").value;
 
-                if (!salleId) {
+                if (! salleId) {
                     alert("Please enter a salle ID");
                     return;
                 }

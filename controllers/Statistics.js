@@ -33,12 +33,12 @@ router.get("/salles/:salleId/revenue", verifyToken, async (req, res) => {
             return res.status(404).json({ message: "Salle not found" });
         }
 
-        if (salle.UserId !== userId && !userRoles.includes("admin")) {
+        if (salle.UserId !== userId && !userRoles.includes("proprietaire")) {
             return res.status(403).json({ message: "Forbidden" });
         }
 
         const reservations = await db.Reservation.findAll({
-            where: { SalleId: salleId },
+            where: { SalleId: salleId},
             include: [{ model: db.Salle, attributes: ['Prix'] }]
         });
 
@@ -46,10 +46,9 @@ router.get("/salles/:salleId/revenue", verifyToken, async (req, res) => {
         for (const reservation of reservations) {
             const startDate = new Date(reservation.DateHeureDebut);
             const endDate = new Date(reservation.DateHeureFin);
-            const durationHours = Math.abs(endDate - startDate) / 36e5; // duration in hours
+            const durationHours = Math.abs(endDate - startDate) / 36e5;
             totalRevenue += durationHours * reservation.Salle.Prix;
         }
-
         res.json({ salleId: salleId, totalRevenue: totalRevenue });
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });

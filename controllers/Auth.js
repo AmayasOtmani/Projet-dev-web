@@ -11,6 +11,7 @@ router.post("/login", async (req, res) => {
     var result = await db.User.findOne({
         where: {
             Email: req.body.email,
+            Valid:true,
         },
         include: "Roles"
     });
