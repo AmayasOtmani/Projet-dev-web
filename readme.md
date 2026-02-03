@@ -30,7 +30,7 @@ Pour démarrer le serveur, exécutez la commande suivante :
 ```sh
 node index.js
 ```
-
+pour tester les routes il suffit d'ouvrir le fichier test.html
 ## Dépendances
 
 *   **@sequelize/mysql**: `^7.0.0-alpha.47`
@@ -48,12 +48,10 @@ node index.js
 
 Le projet utilise une architecture qui favorise un couplage faible et le principe de responsabilité unique (Single Responsibility Principle - SRP) afin de garantir la modularité, la maintenabilité et de réduire les erreurs. L'application est structurée en plusieurs répertoires, chacun ayant un rôle spécifique :
 
-*   **controllers**: Ce répertoire contient les contrôleurs qui gèrent la logique de routage et les requêtes HTTP pour chaque entité (par exemple, Auth, Avis, Reservations, Salles, Statistics, Users). Ils interagissent avec les services pour exécuter les opérations métier.
+*   **controllers**: Ce répertoire contient les contrôleurs qui gèrent la logique de routage et les requêtes HTTP pour chaque entité (par exemple, Auth, Avis, Reservations, Salles, Statistics, Users).
 *   **Middleware**: Ce répertoire contient les middlewares Express utilisés pour intercepter et traiter les requêtes HTTP avant qu'elles n'atteignent les gestionnaires de route. Cela inclut l'authentification (`authmw.js`) et la validation (`validationmw.js`).
-*   **dal**: (Data Access Layer) Ce répertoire contient les couches d'accès aux données. Il est responsable de l'interaction directe avec la base de données via des modèles Sequelize pour les opérations CRUD.
-*   **models**: Ce répertoire définit les modèles Sequelize qui représentent la structure des tables de la base de données et leurs relations.
 *   **persistance**: Ce répertoire contient la configuration de la base de données et potentiellement des scripts de migration ou de _seeding_ des données (`db.js`).
-*   **queries**: Ce répertoire contient les requêtes spécifiques pour récupérer des données, inspirées du pattern CQRS (Command Query Responsibility Segregation) souvent utilisé dans des architectures comme .NET. Elles sont optimisées pour la lecture des données.
+*   **queries**: Ce répertoire contient les requêtes spécifiques pour récupérer des données, inspirées du pattern CQRS (Command Query Responsibility Segregation) souvent utilisé dans le framework .NET.
 *   ****security**: Ce répertoire gère tous les composants liés à la sécurité de l'application, principalement le hachage des mots de passe avec `bcrypt` et la gestion des tokens (`security.js`).
 *   **config**: Ce répertoire contient les fichiers de configuration pour différents environnements ou modules de l'application.
 
