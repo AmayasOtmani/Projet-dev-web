@@ -30,7 +30,7 @@ Pour démarrer le serveur, exécutez la commande suivante :
 ```sh
 node index.js
 ```
-
+pour tester les routes il suffit d'ouvrir le fichier test.html
 ## Dépendances
 
 *   **@sequelize/mysql**: `^7.0.0-alpha.47`
